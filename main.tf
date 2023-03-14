@@ -32,3 +32,16 @@ resource "azurerm_subnet" "aks-subnet" {
   address_prefixes     = ["10.42.1.0/24"]
 }
 
+resource "azurerm_subnet" "cp-back" {
+  name                 = "cp-back-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.42.4.0/24"]
+}
+resource "azurerm_subnet" "cp-front" {
+  name                 = "cp-front-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.42.3.0/24"]
+}
+

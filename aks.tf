@@ -35,6 +35,29 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 }
 
+resource "azurerm_route_table" "aks-rt" {
+  name                          = "aks-rt-tf"
+  location                      = azurerm_resource_group.rg.location
+  resource_group_name           = azurerm_resource_group.rg.name
+  disable_bgp_route_propagation = false
+
+  route {
+    name           = "to-internet"
+    address_prefix = "0.0.0.0/0"
+    next_hop_type  = "VirtualAppliance"
+    next_hop_in_ip_address = "10.42.4.4"
+  }
+
+  tags = {
+    environment = "Production"
+  }
+}
+
+resource "azurerm_subnet_route_table_association" "aks-rt-to-subnet" {
+  subnet_id      = azurerm_subnet.aks-subnet.id
+  route_table_id = azurerm_route_table.aks-rt.id
+}
+
 output "client_certificate" {
   value     = azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate
   sensitive = true

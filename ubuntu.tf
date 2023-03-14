@@ -128,6 +128,29 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
   }
 }
 
+resource "azurerm_route_table" "linux-rt" {
+  name                          = "linux-rt-tf"
+  location                      = azurerm_resource_group.rg.location
+  resource_group_name           = azurerm_resource_group.rg.name
+  disable_bgp_route_propagation = false
+
+  route {
+    name           = "to-internet"
+    address_prefix = "0.0.0.0/0"
+    next_hop_type  = "VirtualAppliance"
+    next_hop_in_ip_address = "10.42.4.4"
+  }
+
+  tags = {
+    environment = "Production"
+  }
+}
+
+resource "azurerm_subnet_route_table_association" "linux-rt-to-subnet" {
+  subnet_id      = azurerm_subnet.linux-subnet.id
+  route_table_id = azurerm_route_table.linux-rt.id
+}
+
 output "ssh_ip" {
     
     value = azurerm_linux_virtual_machine.linuxvm.public_ip_address
