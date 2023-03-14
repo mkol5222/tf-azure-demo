@@ -1,0 +1,47 @@
+# resource "azurerm_resource_group" "node-rg" {
+#   name     = "${var.resource_group_name}-node"
+#   location = var.resource_group_location
+
+#   tags = {
+#     environment = "azure-demo"
+#   }
+# }
+resource "azurerm_kubernetes_cluster" "aks" {
+  name                = "aks1"
+  kubernetes_version  = "1.24"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  dns_prefix          = "aks1"
+  node_resource_group = "${var.resource_group_name}-nodes"
+
+  default_node_pool {
+    name                = "system"
+    node_count          = 1
+    vm_size             = "Standard_DS2_v2"
+    type                = "VirtualMachineScaleSets"
+    #availability_zones  = [1, 2, 3]
+    enable_auto_scaling = false
+    vnet_subnet_id  = azurerm_subnet.aks-subnet.id
+  }
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  network_profile {
+    # load_balancer_sku = "Standard"
+    network_plugin    = "azure" # azure (CNI)
+    
+  }
+}
+
+output "client_certificate" {
+  value     = azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate
+  sensitive = true
+}
+
+output "kube_config" {
+  value = azurerm_kubernetes_cluster.aks.kube_config_raw
+
+  sensitive = true
+}
