@@ -130,11 +130,11 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
 
 output "ssh_ip" {
     
-    value = azurerm_public_ip.public_ip.ip_address
+    value = azurerm_linux_virtual_machine.linuxvm.public_ip_address
 }
 
 output "ssh_key" {
-    value = tls_private_key.example_ssh.private_key_openssh
+    value = tls_private_key.example_ssh.private_key_pem
     sensitive = true
 }
 
