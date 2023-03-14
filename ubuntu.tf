@@ -35,6 +35,9 @@ resource "azurerm_network_security_group" "nsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "nic" {
+    depends_on = [
+      azurerm_subnet.linux-subnet
+    ]
   name                = "u1-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -123,5 +126,15 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
   tags = {
     environment = "azure-demo"
   }
+}
+
+output "ssh_ip" {
+    
+    value = azurerm_public_ip.public_ip.ip_address
+}
+
+output "ssh_key" {
+    value = tls_private_key.example_ssh.private_key_openssh
+    sensitive = true
 }
 
