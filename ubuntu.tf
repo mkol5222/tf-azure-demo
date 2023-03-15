@@ -127,7 +127,13 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.storage.primary_blob_endpoint
   }
-
+lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      tags,
+    ]
+  }
 
 }
 

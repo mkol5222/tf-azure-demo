@@ -154,4 +154,11 @@ resource "azurerm_virtual_machine" "sg-vm-instance" {
     managed_disk_type = var.storage_account_type
     disk_size_gb      = var.disk_size
   }
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      tags,
+    ]
+  }
 }

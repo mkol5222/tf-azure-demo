@@ -58,6 +58,11 @@ cp /home/admin/cms.jar $VSECDIR/lib/cms.jar
 ls -la $VSECDIR/lib/cms.jar*
 vsec stop;vsec start
 
+# change settings 
+sed -i s/kubernetes.displayPods=false/kubernetes.displayPods=true/ $FWDIR/conf/vsec.conf; vsec stop; vsec start
+# confirm it
+grep displayPods $FWDIR/conf/vsec.conf
+
 # enable API remote access
 while true; do
     status=`api status |grep 'API readiness test SUCCESSFUL. The server is up and ready to receive connections' |wc -l`
