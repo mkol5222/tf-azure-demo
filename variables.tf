@@ -15,4 +15,5 @@ variable "resource_group_location" {
 variable "virtual_network_name" {
   type        = string
   description = "VNET name in Azure"
+  default = "vnet-azure-demo-lab"
 }

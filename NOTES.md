@@ -4,6 +4,10 @@ Login to Ubuntu
 terraform output -raw ssh_key > /tmp/a.key; chmod 400 /tmp/a.key
 ssh -i /tmp/a.key azureuser@$(terraform output -raw ssh_ip)
 ```
+Powershell Windows
+```powershell
+
+```
 
 Use AKS
 ```bash
