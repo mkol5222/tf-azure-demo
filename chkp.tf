@@ -1,5 +1,6 @@
 
 resource "azurerm_marketplace_agreement" "checkpoint" {
+    count = 0
   publisher = var.publisher //"checkpoint"
   offer     =  var.vm_os_offer  //"check-point-cg-r8110" // vm_os_offer           = "check-point-cg-r8110"                 # "check-point-cg-r8040"
   plan      = var.vm_os_sku // "mgmt-byol"             // vm_os_sku             = "mgmt-byol"                              # "mgmt-byol" or "sg-byol" 
@@ -95,7 +96,7 @@ resource "azurerm_virtual_machine" "sg-vm-instance" {
 #     type = module.common.vm_instance_identity
 #   }
 
-  dynamic "plan" {
+  plan {
     
       name      = var.vm_os_sku
       publisher = var.publisher
@@ -139,18 +140,18 @@ resource "azurerm_virtual_machine" "sg-vm-instance" {
   }
 
   storage_image_reference {
-    id        = local.custom_image_condition ? azurerm_image.custom-image[0].id : null
-    publisher = local.custom_image_condition ? null : module.common.publisher
-    offer     = module.common.vm_os_offer
-    sku       = module.common.vm_os_sku
-    version   = module.common.vm_os_version
+    id        = null // local.custom_image_condition ? azurerm_image.custom-image[0].id : null
+    publisher = var.publisher // local.custom_image_condition ? null : module.common.publisher
+    offer     = var.vm_os_offer
+    sku       = var.vm_os_sku
+    version   = var.vm_os_version
   }
 
   storage_os_disk {
     name              = var.sg_name
-    create_option     = module.common.storage_os_disk_create_option
-    caching           = module.common.storage_os_disk_caching
-    managed_disk_type = module.common.storage_account_type
-    disk_size_gb      = module.common.disk_size
+    create_option     = var.storage_os_disk_create_option
+    caching           = var.storage_os_disk_caching
+    managed_disk_type = var.storage_account_type
+    disk_size_gb      = var.disk_size
   }
 }

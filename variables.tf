@@ -141,3 +141,34 @@ locals { // locals for 'authentication_type' allowed values
   // will fail if [var.authentication_type] is invalid:
   validate_authentication_type_value = index(local.authentication_type_allowed_values, var.authentication_type)
 }
+variable "disk_size" {
+  description = "Storage data disk size size(GB).Select a number between 100 and 3995"
+  type        = string
+  default = 110
+}
+variable "storage_os_disk_create_option" {
+  description = "The method to use when creating the managed disk"
+  type        = string
+  default     = "FromImage"
+}
+
+variable "storage_os_disk_caching" {
+  description = "Specifies the caching requirements for the OS Disk"
+  default     = "ReadWrite"
+}
+
+variable "managed_disk_type" {
+  description = "Specifies the type of managed disk to create. Possible values are either Standard_LRS, StandardSSD_LRS, Premium_LRS"
+  type        = string
+  default     = "Standard_LRS"
+}
+variable "vm_os_version" {
+  description = "The version of the image that you want to deploy. "
+  type        = string
+  default     = "latest"
+}
+variable "storage_account_type" {
+  description = "Defines the type of storage account to be created. Valid options is Standard_LRS, Premium_LRS"
+  type        = string
+  default     = "Standard_LRS"
+}

@@ -7,6 +7,9 @@
 #   }
 # }
 resource "azurerm_kubernetes_cluster" "aks" {
+  depends_on = [
+    azurerm_subnet.aks-subnet
+  ]
   name                = "aks1"
   kubernetes_version  = "1.24"
   location            = azurerm_resource_group.rg.location
