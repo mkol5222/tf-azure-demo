@@ -33,7 +33,7 @@ resource "azurerm_network_interface" "nic1" {
     name                          = "ipconfig1"
     subnet_id                     = azurerm_subnet.cp-front.id
     private_ip_address_allocation = var.vnet_allocation_method
-    private_ip_address            = "10.42.5.4" //cidrhost(var.subnet_prefixes[0], 4)
+    private_ip_address            = "10.42.3.4" //cidrhost(var.subnet_prefixes[0], 4)
     public_ip_address_id          = azurerm_public_ip.public-ip.id
   }
 }

@@ -28,9 +28,7 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 
-  tags = {
-    environment = "azure-demo"
-  }
+  
 }
 
 # Create network interface
@@ -49,9 +47,7 @@ resource "azurerm_network_interface" "nic" {
     public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
 
-  tags = {
-    environment = "azure-demo"
-  }
+ 
 }
 
 # Connect the security group to the network interface
@@ -78,9 +74,7 @@ resource "azurerm_storage_account" "storage" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-  tags = {
-    environment = "azure-demo"
-  }
+ 
 }
 
 # Create (and display) an SSH key
@@ -91,6 +85,13 @@ resource "tls_private_key" "example_ssh" {
   #   # Generate a new ID only when a new resource group is defined
   #   resource_group = azurerm_resource_group.rg.name
   # }
+   lifecycle {
+    replace_triggered_by = [
+      # Replace `aws_appautoscaling_target` each time this instance of
+      # the `aws_ecs_service` is replaced.
+      azurerm_linux_virtual_machine.ubuntu1.id
+    ]
+  }
 }
 
 # Create virtual machine
@@ -127,9 +128,7 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
     storage_account_uri = azurerm_storage_account.storage.primary_blob_endpoint
   }
 
-  tags = {
-    environment = "azure-demo"
-  }
+
 }
 
 resource "azurerm_route_table" "linux-rt" {
@@ -145,9 +144,7 @@ resource "azurerm_route_table" "linux-rt" {
     next_hop_in_ip_address = "10.42.4.4"
   }
 
-  tags = {
-    environment = "Production"
-  }
+
 }
 
 resource "azurerm_subnet_route_table_association" "linux-rt-to-subnet" {

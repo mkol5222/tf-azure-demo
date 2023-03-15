@@ -52,9 +52,7 @@ resource "azurerm_route_table" "aks-rt" {
   #   next_hop_in_ip_address = "10.42.4.4"
   # }
 
-  tags = {
-    environment = "Production"
-  }
+ 
 }
 
 resource "azurerm_subnet_route_table_association" "aks-rt-to-subnet" {
