@@ -87,16 +87,40 @@ mgmt_cli -r true show simple-gateway name chkp -o json
 clish -c 'set static-route 10.42.5.0/24 nexthop gateway address 10.42.4.1 on' -s
 clish -c 'set static-route 10.42.1.0/24 nexthop gateway address 10.42.4.1 on' -s
 
+# cat ~/.ssh/config na GW
+# Host u1
+#  Hostname 10.42.5.4
+#   User azureuser
+#   IdentityFile ~/.ssh/a.key
+
 # login with SmartConsole
 ```
 
 
 ## AKS
-```
+```powershell
 kubectl create ns demo
 kubectl -n demo create deploy webka1 --image nginx --replicas 3
 
 kubectl -n demo get pods -o wide --show-labels
 
+# PowerShell
+kubectl -n demo get pods -o name | % { kubectl -n demo exec -it $_ -- curl ip.iol.cz/ip/ -s }
 
+@'
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: azure-ip-masq-agent-config
+  namespace: kube-system
+  labels:
+    component: ip-masq-agent
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: EnsureExists
+data:
+  ip-masq-agent: |-
+    nonMasqueradeCIDRs:
+      - 0.0.0.0/0
+    masqLinkLocal: true
+'@ |  kubectl -n kube-system apply -f -
 ```
