@@ -18,6 +18,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   node_resource_group = "${var.resource_group_name}-nodes"
 
   default_node_pool {
+  
     name                = "system"
     node_count          = 1
     vm_size             = "Standard_DS2_v2"
@@ -44,12 +45,12 @@ resource "azurerm_route_table" "aks-rt" {
   resource_group_name           = azurerm_resource_group.rg.name
   disable_bgp_route_propagation = false
 
-  route {
-    name           = "to-internet"
-    address_prefix = "0.0.0.0/0"
-    next_hop_type  = "VirtualAppliance"
-    next_hop_in_ip_address = "10.42.4.4"
-  }
+  # route {
+  #   name           = "to-internet"
+  #   address_prefix = "0.0.0.0/0"
+  #   next_hop_type  = "VirtualAppliance"
+  #   next_hop_in_ip_address = "10.42.4.4"
+  # }
 
   tags = {
     environment = "Production"
