@@ -85,13 +85,13 @@ resource "tls_private_key" "example_ssh" {
   #   # Generate a new ID only when a new resource group is defined
   #   resource_group = azurerm_resource_group.rg.name
   # }
-   lifecycle {
-    replace_triggered_by = [
-      # Replace `aws_appautoscaling_target` each time this instance of
-      # the `aws_ecs_service` is replaced.
-      azurerm_linux_virtual_machine.ubuntu1.id
-    ]
-  }
+  #  lifecycle {
+  #   replace_triggered_by = [
+  #     # Replace `aws_appautoscaling_target` each time this instance of
+  #     # the `aws_ecs_service` is replaced.
+  #     azurerm_linux_virtual_machine.linuxvm
+  #   ]
+  # }
 }
 
 # Create virtual machine

@@ -72,7 +72,7 @@ variable "account_replication_type" {
 variable "admin_username" {
   description = "Administrator username of deployed VM. Due to Azure limitations 'notused' name can be used"
   type        = string
-  default     = "admin"
+  default     = "azureuser"
 }
 
 variable "admin_password" {
