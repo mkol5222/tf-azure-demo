@@ -6,7 +6,13 @@ resource "azurerm_marketplace_agreement" "checkpoint" {
   plan      = var.vm_os_sku // "mgmt-byol"             // vm_os_sku             = "mgmt-byol"                              # "mgmt-byol" or "sg-byol" 
 }
 
-
+output "cp-public-ip" {
+  value = azurerm_public_ip.public-ip.ip_address
+}
+output "cp-pass" {
+  sensitive = true
+  value = var.admin_password
+}
 
 resource "azurerm_public_ip" "public-ip" {
   name                    = var.sg_name
@@ -18,6 +24,14 @@ resource "azurerm_public_ip" "public-ip" {
     var.sg_name,
     "-",
   random_id.randomId.hex])
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      tags,
+    ]
+  }
 }
 
 resource "azurerm_network_interface" "nic1" {
@@ -36,6 +50,13 @@ resource "azurerm_network_interface" "nic1" {
     private_ip_address            = "10.42.3.4" //cidrhost(var.subnet_prefixes[0], 4)
     public_ip_address_id          = azurerm_public_ip.public-ip.id
   }
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      tags,
+    ]
+  }
 }
 resource "azurerm_network_interface" "nic2" {
 
@@ -50,6 +71,13 @@ resource "azurerm_network_interface" "nic2" {
     subnet_id                     = azurerm_subnet.cp-back.id
     private_ip_address_allocation = var.vnet_allocation_method
     private_ip_address            = "10.42.4.4" //cidrhost(azurerm_subnet.cp-back.subnet_prefixes[0], 4)
+  }
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      tags,
+    ]
   }
 }
 
@@ -67,6 +95,14 @@ resource "azurerm_storage_account" "vm-boot-diagnostics-storage" {
   account_tier             = var.storage_account_tier
   account_replication_type = var.account_replication_type
   account_kind             = "Storage"
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      tags,
+    ]
+  }
 }
 
 locals {

@@ -129,3 +129,14 @@ data:
     masqLinkLocal: true
 '@ |  kubectl -n kube-system apply -f -
 ```
+
+## AKS access
+
+```powershell
+$apiServerUrl = kubectl cluster-info | sls "plane is running at (.*)" | % { $_.Matches.groups[1].Value }
+$apiServerUrl
+
+$k8sToken = kubectl get secret/cloudguard-controller -o json | wsl jq -r .data.token
+$k8sToken
+
+```
