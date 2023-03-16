@@ -23,6 +23,10 @@ code $env:USERPROFILE/.ssh/config
 #    ProxyJump cp
 #    IdentityFile ~/.ssh/u1tf.key
 
+# Management readyness
+ssh cp 
+# watch -n 10 -d api status
+
 # make connection from U1
 ssh u1 curl ip.iol.cz/ip/ -s
 
@@ -35,4 +39,20 @@ kubectl get pods -n demo -o wide --show-labels
 
 # make connection from pods in ns demo:
 kubectl get pods -n demo -o name -l app=webka1 | % { kubectl -n demo exec -it $_ -- curl -s -m1 ip.iol.cz/ip/ }
+
+# put all to prod
+kubectl get pods -n demo -o name -l app=webka1 | % { kubectl -n demo label $_ env=prod --overwrite  }
+kubectl get pods -n demo -o wide --show-labels
+# put all to test
+kubectl get pods -n demo -o name -l app=webka1 | % { kubectl -n demo label $_ env=test --overwrite  }
+kubectl get pods -n demo -o wide --show-labels
+
+# put first to prod
+kubectl get pods -n demo -o name -l app=webka1 | select -first 1 | % { kubectl -n demo label $_ env=prod --overwrite  }
+kubectl get pods -n demo -o wide --show-labels
+
+# put last to test
+kubectl get pods -n demo -o name -l app=webka1 | select -last 1 | % { kubectl -n demo label $_ env=test --overwrite  }
+kubectl get pods -n demo -o wide --show-labels
+
 ```
