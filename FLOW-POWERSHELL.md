@@ -50,6 +50,10 @@ ssh cp 'fw log -l -p -n -f | grep " Ubuntu test to Internet"'
 # check cluster readyness
 terraform output -raw kube_config > $env:TEMP/k.config
 $env:KUBECONFIG="$env:TEMP/k.config"
+# OR
+az aks list -g rg-ademo  -o table
+az aks get-credentials -n aks1 -g rg-ademo
+kubectl config use-context aks1
 
 kubectl get nodes -o wide
 kubectl get pods -n demo -o wide --show-labels
@@ -82,4 +86,8 @@ kubectl get pods -n demo -o wide --show-labels
 kubectl get pods -o name | % { Write-Host $_; kubectl exec -it $_ -- curl ifconfig.me -L -m1  }
 # vs from demo ns
 kubectl get pods -o name -n demo | % { Write-Host $_;  kubectl -n demo exec -it $_ -- curl ifconfig.me -L -m1  }
+
+# from Ubuntu to webka1 pods in ns demo
+#kubectl get pods -o jsonpath="{.items[*].status.podIP}" -n demo -l app=webka1 | % { Write-Host $_; "ssh u1 curl -s -m1 $_" }
+kubectl get pods -n demo -o custom-columns=ip:.status.podIP | select -skip 1 | % { Write-Host $_; ssh u1 curl -s -v -m1 $_ }
 ```

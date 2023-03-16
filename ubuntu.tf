@@ -168,6 +168,12 @@ resource "azurerm_route_table" "linux-rt" {
     next_hop_type  = "VirtualAppliance"
     next_hop_in_ip_address = "10.42.4.4"
   }
+      route {
+    name           = "to-aks1"
+    address_prefix = "10.42.1.0/24"
+    next_hop_type  = "VirtualAppliance"
+    next_hop_in_ip_address = "10.42.4.4"
+  }
 lifecycle {
     ignore_changes = [
       # Ignore changes to tags, e.g. because a management agent
