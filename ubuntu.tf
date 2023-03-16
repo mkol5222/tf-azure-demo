@@ -192,4 +192,8 @@ output "ssh_key" {
     value = tls_private_key.example_ssh.private_key_pem
     sensitive = true
 }
+output "ssh_key_pub" {
+    value = tls_private_key.example_ssh.public_key_openssh
+    sensitive = true
+}
 
