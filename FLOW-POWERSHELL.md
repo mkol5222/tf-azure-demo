@@ -32,4 +32,7 @@ $env:KUBECONFIG="$env:TEMP/k.config"
 
 kubectl get nodes -o wide
 kubectl get pods -n demo -o wide --show-labels
+
+# make connection from pods in ns demo:
+kubectl get pods -n demo -o name -l app=webka1 | % { kubectl -n demo exec -it $_ -- curl -s -m1 ip.iol.cz/ip/ }
 ```
