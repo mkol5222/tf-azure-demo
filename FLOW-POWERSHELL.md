@@ -57,14 +57,19 @@ kubectl config use-context aks1
 
 kubectl get nodes -o wide
 kubectl get pods -n demo -o wide --show-labels
+kubectl get pods -n default -o wide --show-labels
+
 
 # make connection from pods in ns demo:
 kubectl get pods -n demo -o name -l app=webka1 | % { Write-Host $_; kubectl -n demo exec -it $_ -- curl -s -m1 ip.iol.cz/ip/; Write-Host  }
 # to Linux
 kubectl get pods -n demo -o name -l app=webka1 | % { Write-Host $_; kubectl -n demo exec -it $_ -- curl -s -m1 10.42.5.4; Write-Host  }
 
+# try conn from Pods in DEFAULT
+kubectl get pods -n default -o name | % { Write-Host $_; kubectl -n default exec -it $_ -- curl -s -m1 ip.iol.cz/ip/; Write-Host  }
+
 # scale app up
-kubectl -n demo scale deploy webka1 --replicas 6
+kubectl -n demo scale deploy webka1 --replicas 9
 kubectl get pods -n demo -o wide --show-labels
 # scale app down
 kubectl -n demo scale deploy webka1 --replicas 3
@@ -81,8 +86,8 @@ kubectl get pods -n demo -o wide --show-labels
 kubectl get pods -n demo -o name -l app=webka1 | select -first 1 | % { kubectl -n demo label $_ env=prod --overwrite  }
 kubectl get pods -n demo -o wide --show-labels
 
-# put last to test
-kubectl get pods -n demo -o name -l app=webka1 | select -last 1 | % { kubectl -n demo label $_ env=test --overwrite  }
+# put last 3 to test
+kubectl get pods -n demo -o name -l app=webka1 | select -last 3 | % { kubectl -n demo label $_ env=test --overwrite  }
 kubectl get pods -n demo -o wide --show-labels
 
 # try (dropped) connection from default ns
