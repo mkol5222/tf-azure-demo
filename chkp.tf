@@ -1,9 +1,9 @@
 
 resource "azurerm_marketplace_agreement" "checkpoint" {
-    count = 0
-  publisher = var.publisher //"checkpoint"
-  offer     =  var.vm_os_offer  //"check-point-cg-r8110" // vm_os_offer           = "check-point-cg-r8110"                 # "check-point-cg-r8040"
-  plan      = var.vm_os_sku // "mgmt-byol"             // vm_os_sku             = "mgmt-byol"                              # "mgmt-byol" or "sg-byol" 
+  count     = 0
+  publisher = var.publisher   //"checkpoint"
+  offer     = var.vm_os_offer //"check-point-cg-r8110" // vm_os_offer           = "check-point-cg-r8110"                 # "check-point-cg-r8040"
+  plan      = var.vm_os_sku   // "mgmt-byol"             // vm_os_sku             = "mgmt-byol"                              # "mgmt-byol" or "sg-byol" 
 }
 
 output "cp-public-ip" {
@@ -11,13 +11,13 @@ output "cp-public-ip" {
 }
 output "cp-pass" {
   sensitive = true
-  value = var.admin_password
+  value     = var.admin_password
 }
 
 resource "azurerm_public_ip" "public-ip" {
   name                    = var.sg_name
   location                = azurerm_resource_group.rg.location
-  resource_group_name     =  azurerm_resource_group.rg.name
+  resource_group_name     = azurerm_resource_group.rg.name
   allocation_method       = var.vnet_allocation_method
   idle_timeout_in_minutes = 30
   domain_name_label = join("", [
@@ -40,7 +40,7 @@ resource "azurerm_network_interface" "nic1" {
   name                          = "eth0"
   location                      = azurerm_resource_group.rg.location
   resource_group_name           = azurerm_resource_group.rg.name
-  enable_ip_forwarding          = false
+  enable_ip_forwarding          = true
   enable_accelerated_networking = true
 
   ip_configuration {
@@ -63,7 +63,7 @@ resource "azurerm_network_interface" "nic2" {
   name                          = "eth1"
   location                      = azurerm_resource_group.rg.location
   resource_group_name           = azurerm_resource_group.rg.name
-  enable_ip_forwarding          = false
+  enable_ip_forwarding          = true
   enable_accelerated_networking = true
 
   ip_configuration {
@@ -112,9 +112,9 @@ locals {
 
 resource "azurerm_virtual_machine" "sg-vm-instance" {
   depends_on = [
-        azurerm_marketplace_agreement.checkpoint,
-        azurerm_network_interface.nic1,
-        azurerm_network_interface.nic2
+    azurerm_marketplace_agreement.checkpoint,
+    azurerm_network_interface.nic1,
+    azurerm_network_interface.nic2
   ]
 
   location = azurerm_resource_group.rg.location
@@ -124,21 +124,21 @@ resource "azurerm_virtual_machine" "sg-vm-instance" {
     azurerm_network_interface.nic2.id
   ]
   resource_group_name           = azurerm_resource_group.rg.name
-  vm_size                       =var.vm_size
+  vm_size                       = var.vm_size
   delete_os_disk_on_termination = var.delete_os_disk_on_termination
   primary_network_interface_id  = azurerm_network_interface.nic1.id
 
-#   identity {
-#     type = module.common.vm_instance_identity
-#   }
+  #   identity {
+  #     type = module.common.vm_instance_identity
+  #   }
 
   plan {
-    
-      name      = var.vm_os_sku
-      publisher = var.publisher
-      product   = var.vm_os_offer
-    }
-  
+
+    name      = var.vm_os_sku
+    publisher = var.publisher
+    product   = var.vm_os_offer
+  }
+
 
   boot_diagnostics {
     enabled     = true
@@ -176,7 +176,7 @@ resource "azurerm_virtual_machine" "sg-vm-instance" {
   }
 
   storage_image_reference {
-    id        = null // local.custom_image_condition ? azurerm_image.custom-image[0].id : null
+    id        = null          // local.custom_image_condition ? azurerm_image.custom-image[0].id : null
     publisher = var.publisher // local.custom_image_condition ? null : module.common.publisher
     offer     = var.vm_os_offer
     sku       = var.vm_os_sku

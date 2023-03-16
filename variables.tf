@@ -16,7 +16,7 @@ variable "resource_group_location" {
 variable "virtual_network_name" {
   type        = string
   description = "VNET name in Azure"
-  default = "vnet-azure-demo-lab"
+  default     = "vnet-azure-demo-lab"
 }
 variable "vnet_allocation_method" {
   description = "IP address allocation method"
@@ -26,7 +26,7 @@ variable "vnet_allocation_method" {
 variable "sg_name" {
   type        = string
   description = "Check Point SG(standalone) name"
-  default = "chkp"
+  default     = "chkp"
 }
 variable "vm_size" {
   description = "Specifies size of Virtual Machine"
@@ -87,7 +87,7 @@ variable "installation_type" {
 variable "allow_upload_download" {
   description = "Allow upload/download to Check Point"
   type        = bool
-  default = true
+  default     = true
 }
 variable "os_version" {
   description = "GAIA OS version"
@@ -112,8 +112,8 @@ variable "bootstrap_script" {
 }
 variable "is_blink" {
   description = "Define if blink image is used for deployment"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 variable "sic_key" {
   description = "Secure Internal Communication(SIC) key"
@@ -144,7 +144,7 @@ locals { // locals for 'authentication_type' allowed values
 variable "disk_size" {
   description = "Storage data disk size size(GB).Select a number between 100 and 3995"
   type        = string
-  default = 110
+  default     = 110
 }
 variable "storage_os_disk_create_option" {
   description = "The method to use when creating the managed disk"

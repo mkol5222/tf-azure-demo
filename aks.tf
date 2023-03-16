@@ -18,14 +18,14 @@ resource "azurerm_kubernetes_cluster" "aks" {
   node_resource_group = "${var.resource_group_name}-nodes"
 
   default_node_pool {
-  
-    name                = "system"
-    node_count          = 1
-    vm_size             = "Standard_DS2_v2"
-    type                = "VirtualMachineScaleSets"
+
+    name       = "system"
+    node_count = 1
+    vm_size    = "Standard_DS2_v2"
+    type       = "VirtualMachineScaleSets"
     #availability_zones  = [1, 2, 3]
     enable_auto_scaling = false
-    vnet_subnet_id  = azurerm_subnet.aks-subnet.id
+    vnet_subnet_id      = azurerm_subnet.aks-subnet.id
   }
 
   identity {
@@ -34,8 +34,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   network_profile {
     # load_balancer_sku = "Standard"
-    network_plugin    = "azure" # azure (CNI)
-    
+    network_plugin = "azure" # azure (CNI)
+
   }
   lifecycle {
     ignore_changes = [
@@ -52,20 +52,21 @@ resource "azurerm_route_table" "aks-rt" {
   resource_group_name           = azurerm_resource_group.rg.name
   disable_bgp_route_propagation = false
 
+
   route {
-    name           = "to-internet"
-    address_prefix = "0.0.0.0/0"
-    next_hop_type  = "VirtualAppliance"
+    name                   = "to-linux"
+    address_prefix         = "10.42.5.0/24"
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = "10.42.4.4"
   }
-    route {
-    name           = "to-linux"
-    address_prefix = "10.42.5.0/24"
-    next_hop_type  = "VirtualAppliance"
+  route {
+    name                   = "to-internet"
+    address_prefix         = "0.0.0.0/0"
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = "10.42.4.4"
   }
 
- lifecycle {
+  lifecycle {
     ignore_changes = [
       # Ignore changes to tags, e.g. because a management agent
       # updates these based on some ruleset managed elsewhere.

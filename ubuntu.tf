@@ -39,9 +39,9 @@ resource "azurerm_network_security_group" "nsg" {
 
 # Create network interface
 resource "azurerm_network_interface" "nic" {
-    depends_on = [
-      azurerm_subnet.linux-subnet
-    ]
+  depends_on = [
+    azurerm_subnet.linux-subnet
+  ]
   name                = "u1-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -52,14 +52,14 @@ resource "azurerm_network_interface" "nic" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
-lifecycle {
+  lifecycle {
     ignore_changes = [
       # Ignore changes to tags, e.g. because a management agent
       # updates these based on some ruleset managed elsewhere.
       tags,
     ]
   }
- 
+
 }
 
 # Connect the security group to the network interface
@@ -86,14 +86,14 @@ resource "azurerm_storage_account" "storage" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-lifecycle {
+  lifecycle {
     ignore_changes = [
       # Ignore changes to tags, e.g. because a management agent
       # updates these based on some ruleset managed elsewhere.
       tags,
     ]
   }
- 
+
 }
 
 # Create (and display) an SSH key
@@ -146,7 +146,7 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.storage.primary_blob_endpoint
   }
-lifecycle {
+  lifecycle {
     ignore_changes = [
       # Ignore changes to tags, e.g. because a management agent
       # updates these based on some ruleset managed elsewhere.
@@ -163,18 +163,19 @@ resource "azurerm_route_table" "linux-rt" {
   disable_bgp_route_propagation = false
 
   route {
-    name           = "to-internet"
-    address_prefix = "0.0.0.0/0"
-    next_hop_type  = "VirtualAppliance"
+    name                   = "to-aks1"
+    address_prefix         = "10.42.1.0/24"
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = "10.42.4.4"
   }
-      route {
-    name           = "to-aks1"
-    address_prefix = "10.42.1.0/24"
-    next_hop_type  = "VirtualAppliance"
+  route {
+    name                   = "to-internet"
+    address_prefix         = "0.0.0.0/0"
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = "10.42.4.4"
   }
-lifecycle {
+
+  lifecycle {
     ignore_changes = [
       # Ignore changes to tags, e.g. because a management agent
       # updates these based on some ruleset managed elsewhere.
@@ -190,16 +191,16 @@ resource "azurerm_subnet_route_table_association" "linux-rt-to-subnet" {
 }
 
 output "ssh_ip" {
-    
-    value = azurerm_linux_virtual_machine.linuxvm.public_ip_address
+
+  value = azurerm_linux_virtual_machine.linuxvm.public_ip_address
 }
 
 output "ssh_key" {
-    value = tls_private_key.example_ssh.private_key_pem
-    sensitive = true
+  value     = tls_private_key.example_ssh.private_key_pem
+  sensitive = true
 }
 output "ssh_key_pub" {
-    value = tls_private_key.example_ssh.public_key_openssh
-    sensitive = true
+  value     = tls_private_key.example_ssh.public_key_openssh
+  sensitive = true
 }
 

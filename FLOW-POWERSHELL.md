@@ -60,6 +60,9 @@ kubectl get pods -n demo -o wide --show-labels
 
 # make connection from pods in ns demo:
 kubectl get pods -n demo -o name -l app=webka1 | % { Write-Host $_; kubectl -n demo exec -it $_ -- curl -s -m1 ip.iol.cz/ip/; Write-Host  }
+# to Linux
+kubectl get pods -n demo -o name -l app=webka1 | % { Write-Host $_; kubectl -n demo exec -it $_ -- curl -s -m1 10.42.5.4; Write-Host  }
+
 # scale app up
 kubectl -n demo scale deploy webka1 --replicas 6
 kubectl get pods -n demo -o wide --show-labels
@@ -90,4 +93,10 @@ kubectl get pods -o name -n demo | % { Write-Host $_;  kubectl -n demo exec -it 
 # from Ubuntu to webka1 pods in ns demo
 #kubectl get pods -o jsonpath="{.items[*].status.podIP}" -n demo -l app=webka1 | % { Write-Host $_; "ssh u1 curl -s -m1 $_" }
 kubectl get pods -n demo -o custom-columns=ip:.status.podIP | select -skip 1 | % { Write-Host $_; ssh u1 curl -s -v -m1 $_ }
+# from Pods to U1
+kubectl get pods -n demo -o name -l app=webka1 | % { Write-Host $_; kubectl -n demo exec -it $_ -- curl -v -m1 10.42.5.4; Write-Host  }
+# from gw to U1
+ssh cp curl_cli 10.42.5.4
+# from gw to Pod
+ssh cp curl_cli 10.42.1.28
 ```
