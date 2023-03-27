@@ -59,12 +59,12 @@ resource "azurerm_route_table" "aks-rt" {
     next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = "10.42.4.4"
   }
-  route {
-    name                   = "to-internet"
-    address_prefix         = "0.0.0.0/0"
-    next_hop_type          = "VirtualAppliance"
-    next_hop_in_ip_address = "10.42.4.4"
-  }
+  # route {
+  #   name                   = "to-internet"
+  #   address_prefix         = "0.0.0.0/0"
+  #   next_hop_type          = "VirtualAppliance"
+  #   next_hop_in_ip_address = "10.42.4.4"
+  # }
 
   lifecycle {
     ignore_changes = [
