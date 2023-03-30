@@ -22,8 +22,8 @@ Host u1ademo
     IdentityFile ~/.ssh/u1tf.key
 
 ssh cpademo:
-    - sed -i '/AllowTcpForwarding no/c AllowTcpForwarding yes' /etc/ssh/sshd_config
-    - service sshd restart
+    sed -i '/AllowTcpForwarding no/c AllowTcpForwarding yes' /etc/ssh/sshd_config
+    service sshd restart
 ssh u1ademo
 
 SUBSCRIPTION_ID=f4ad5e85-ec75-4321-8854-ed7eb611f61d
